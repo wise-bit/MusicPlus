@@ -17,6 +17,7 @@ import quoteGenerator
 # Global Variables
 videoName = ""
 currentIndex = 1
+playingIndex = 1
 
 path = ""
 
@@ -55,7 +56,7 @@ def link_grabber(query):
 # Download audio
 def download(ID):
 
-	nextIndex()
+	next_index()
 	global currentIndex
 
 	ydl_opts = {
@@ -71,7 +72,7 @@ def download(ID):
 
 	sys.stdout = open(os.devnull, "w")
 
-	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+	abswith youtube_dl.YoutubeDL(ydl_opts) as ydl:
 	    ydl.download(['http://www.youtube.com/watch?v=' + ID])
 
 	sys.stdout = sys.__stdout__
@@ -82,18 +83,15 @@ def download(ID):
 # Play the thing
 def play():
 
-	updatePath()
+	update_path()
 
 	mp3 = mutagen.mp3.MP3(path)
 	mixer.init(frequency=mp3.info.sample_rate)
 
-	printVideoName()
+	print_video_name()
 
 	mixer.music.load(path)
 	mixer.music.play()
-
-	# while mixer.music.get_busy() == True:
-	# 	continue
 
 	next()
 
@@ -101,23 +99,30 @@ def play():
 
 def next():
 
-	print("Enter 's' to stop music, 't' to set timer, or 'n' to enter new name of song")
-	after = input("> ")
+print("Enter 's' to stop music, 't' to set timer, or 'n' to enter new name of song")
+after = input("> ")
 
-	if after == "s":
-		mixer.music.stop()
-		print(quoteGenerator.getQuote())
+if after == "s":
+	mixer.music.stop()
+	print(quoteGenerator.getQuote())
 
-	elif after == "t":
-		None
+elif after == "t":
+	None
 
-	elif after == "n":
-		nextIndex()
-		link_grabber(query())
+elif after == "n":
+	next_index()
+	link_grabber(query())
+	play()
 
-	else:
-		print("invalid option, please try again")
-		next()
+elif after == "f": #finish the current one
+	while mixer.music.get_busy() == True:
+		continue
+
+elif after == 
+
+else:
+	print("invalid option, please try again")
+	next()
 
 
 
@@ -127,10 +132,10 @@ def next():
 
 # skip and stuff
 
-def printVideoName():
+def print_video_name():
 	print("\nNow playing - %s" % videoName)
 
-def updatePath():
+def update_path():
 	global path
 	path = '{}/storage/{}.mp3'.format(os.getcwd(), currentIndex)
 
@@ -138,9 +143,16 @@ def query():
 	s = input(">> ")
 	return s
 
-def nextIndex():
+def next_index():
 	global currentIndex
 	if currentIndex < 9:
 		currentIndex += 1
 	else:
 		currentIndex = 1
+
+def currently_playing_index():
+	global playingIndex
+	if playingIndex < 9:
+		playingIndex += 1
+	else:
+		playingIndex = 1
