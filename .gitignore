@@ -102,3 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
+# Others
+packages/
+storage/
+__pycache__/
+
+
